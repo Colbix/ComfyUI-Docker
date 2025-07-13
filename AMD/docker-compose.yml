@@ -1,0 +1,46 @@
+# ComfyUI Docker Compose File by John Aldred
+# http://www.johnaldred.com
+# http://github.com/kaouthia
+# 
+# Updated to use AMD with ROCm by Colbix
+# https://github.com/Colbix/ComfyUI-Docker
+
+services:
+  comfyk:
+    build:
+      dockerfile: Dockerfile
+    image: comfyui:latest
+    container_name: comfyui
+    ports:
+      - "8188:8188"
+    volumes:
+      # persist your models, output, and settings:
+      - /home/username/comfyui/models:/app/ComfyUI/models
+
+      # persist your output images:
+      - /home/usernmae/comfyui/output:/app/ComfyUI/output
+
+      # persist all your settings & extra nodes:
+      - /home/username/comfyui/settings:/app/ComfyUI/user/default:rw
+
+      # persist just your saved flows (overrides the workflows/ in default):
+      - /home/username/comfyui/flows:/app/ComfyUI/user/default/workflows:rw
+    ipc: host
+    network_mode: host
+
+     # Add groups to allow non-Root user access the main compute interface and Direct Rendering Interface
+     # See https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#accessing-gpus-in-containers
+    group_add:
+      - video
+      - container
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    security_opt:
+      - seccomp=unconfined
+    cap_add:
+      - SYS_PTRACE
+
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
