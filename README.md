@@ -10,7 +10,7 @@ It also makes it easy to update without worrying about potential conflicts. On c
 
 ## Features
 
-- **Runs ComfyUI in Docker** with GPU (NVIDIA) support.
+- **Runs ComfyUI in Docker** with GPU (NVIDIA and AMD) support.
 - **Persistent storage** for models, outputs, settings, and flows.
 - **Automatic custom node installation** (see `entrypoint.sh`).
 - **Simple to install and update.**
@@ -23,11 +23,21 @@ You can find more [complete setup instructions on my website](https://www.johnal
 
 ### **1. Prerequisites**
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) for Windows or regular [Docker](https://docs.docker.com/desktop/setup/install/linux/) for Linux.
+  #### Git
+  - [Git](https://git-scm.com) to clone this repo
+
+  #### NIVIDA Windows and Linux
+  - [Docker Desktop](https://www.docker.com/products/docker-desktop/) for Windows.
   - On Windows: Enable WSL2 and GPU support if you want to use your NVIDIA GPU.
   - It also works through [Portainer-CE](https://hub.docker.com/r/portainer/portainer-ce), which is the way I use this setup.
-- [Git](https://git-scm.com/) (to clone this repo)
-- Linux users will need [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) for NVIDIA GPU Passthrough in your Docker containers. Windows users just need the latest GPU drivers with WSL2 support.
+  - Linux users will need [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+
+  #### AMD with ROCm Linux
+  - Docker for Linux; [Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+  - Review [ROCm System Requirements](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html) to see supported GPU's, CPU's, and OS's
+  - Install [AMDGPU driver](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/quick-start.html#amdgpu-driver-in) on the host.
+  - Identify the current host kernel version. `uname -r`
+  - Review [ROCm compatible user and kernel-space](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/user-kernel-space-compat-matrix.html) to make sure the host kernel version is supported.
 
 ### **2. Clone this repository**
 
@@ -80,7 +90,7 @@ The first run may take several minutes as it downloads the latest version of Com
 
 * **Custom nodes:**
   On first running the container, the entrypoint will automatically download several custom nodes including:
-  
+
   - ComfyUI-Manager
   - ComfyUI_essentials
   - ComfyUI-Crystools
@@ -88,8 +98,24 @@ The first run may take several minutes as it downloads the latest version of Com
   - ComfyUI-KJNodes
   - ComfyUI_UltimateSDUpscale
 
-* **GPU Support:**
-  This stack is set up for NVIDIA GPUs. You may need to install [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) for GPU passthrough to work.
+
+### GPU Support
+
+#### NVIDIA
+
+   You may need to install [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) for GPU passthrough to work.
+
+#### AMD with ROCm
+
+  - ***Compose file***
+    1. For the container to make use of the host GPU the non-root user account needs permission to the `/dev`, specifically `/dev/kfd` and `/dev/dri`. Permissions are applied by using `group_add` with groups `Video` and `Container`.
+    2. To access the host GPU's the `devices` option has been added. See [Accessing GPUs in containers](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#accessing-gpus-in-containers) for further details.
+
+  - ***Build file***
+    1. The build file contains installs separated between root and non-root accounts.
+    2. To update the version of Pytorch for ROCm you'll need to update the URL in the non-root account section and then rebuild the image. 
+    3. The base image has a permission group ID `992` without a group name applied to `/dev/kfd`, `/dev/dri/renderD128`, and `/dev/dri/renderD129`. To have the permission assignable a group name is assigned called `Container`. If you change the name don't forget to to update the compose file `group_add` group name.
+
 
 * **Volumes:**
   By default, your models, outputs, and other data persist in the folders you mapped on your host system. Whether you're on Windows or Linux, you'll want to modify these paths to something more suitable for your needs and folder structure.
