@@ -98,6 +98,8 @@ The first run may take several minutes as it downloads the latest version of Com
   - ComfyUI-KJNodes
   - ComfyUI_UltimateSDUpscale
 
+* **Volumes:**
+  By default, your models, outputs, and other data persist in the folders you mapped on your host system. Whether you're on Windows or Linux, you'll want to modify these paths to something more suitable for your needs and folder structure.
 
 ### GPU Support
 
@@ -108,18 +110,13 @@ The first run may take several minutes as it downloads the latest version of Com
 #### AMD with ROCm
 
   - ***Compose file***
-    1. For the container to make use of the host GPU the non-root user account needs permission to the `/dev`, specifically `/dev/kfd` and `/dev/dri`. Permissions are applied by using `group_add` with groups `Video` and `Container`.
+    1. For the container to make use of the host GPU the non-root user account needs permission to the `/dev`, specifically `/dev/kfd` and `/dev/dri`. Permissions are applied by using `group_add` with groups `video` and `render`.
     2. To access the host GPU's the `devices` option has been added. See [Accessing GPUs in containers](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#accessing-gpus-in-containers) for further details.
 
   - ***Build file***
     1. The build file contains installs separated between root and non-root accounts.
     2. To update the version of Pytorch for ROCm you'll need to update the URL in the non-root account section and then rebuild the image. 
-    3. The base image has a permission group ID `992` without a group name applied to `/dev/kfd`, `/dev/dri/renderD128`, and `/dev/dri/renderD129`. To have the permission assignable a group name is assigned called `Container`. If you change the name don't forget to to update the compose file `group_add` group name.
-
-
-* **Volumes:**
-  By default, your models, outputs, and other data persist in the folders you mapped on your host system. Whether you're on Windows or Linux, you'll want to modify these paths to something more suitable for your needs and folder structure.
-
+    3. The base image has a permission group ID `992` without a group name applied to `/dev/kfd`, `/dev/dri/renderD128`, and `/dev/dri/renderD129`. To have the permission assignable a group name is assigned called `render`. If you change the name don't forget to to update the compose file `group_add` group name.
 ---
 
 ## **Updating**

@@ -24,7 +24,7 @@ RUN apt-get update \
 # /dev/kfd, /dev/dri/renderD128, and /dev/dri/renderD129
 # that affect access to the main compute interface and Direct Rendering Interface
 # See https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#accessing-gpus-in-containers
-RUN groupadd -g 992 container
+RUN groupadd -g 992 render
 
 # Set the working directory
 WORKDIR /root
@@ -45,7 +45,7 @@ RUN chmod +x /entrypoint.sh
 USER $UID:$GID
 
 # Install Pytorch for the supported version of Rocm, update as needed for newer versions
-RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.3
+RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.4
 
 # make ~/.local/bin available on the PATH so scripts like tqdm, torchrun, etc. are found
 ENV PATH=/home/appuser/.local/bin:$PATH

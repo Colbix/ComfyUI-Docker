@@ -32,7 +32,7 @@ services:
      # See https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#accessing-gpus-in-containers
     group_add:
       - video
-      - container
+      - render
     devices:
       - /dev/kfd
       - /dev/dri
