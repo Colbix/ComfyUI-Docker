@@ -1,4 +1,4 @@
-# ComfyUI Docker Build File by John Aldred
+# ComfyUI Docker Build File v1.0.1 by John Aldred
 # https://www.johnaldred.com
 # https://github.com/kaouthia
 

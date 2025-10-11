@@ -71,7 +71,7 @@ And update the paths in `docker-compose.yml` to match your actual folder locatio
 From the project directory, run:
 
 ```sh
-docker compose up --build
+docker compose build --no-cache && docker compose up -d
 ```
 
 The first run may take several minutes as it downloads the latest version of ComfyUI and its dependencies as well as the latest versions of the custom nodes listed below, along with their dependencies.
