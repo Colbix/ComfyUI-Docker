@@ -1,9 +1,9 @@
-# ComfyUI Docker Build File by John Aldred
-# http://www.johnaldred.com
-# http://github.com/kaouthia
+# ComfyUI Docker Build File v1.0.1 by John Aldred
+# https://www.johnaldred.com
+# https://github.com/kaouthia
 
 # Use a minimal Python base image (adjust version as needed)
-FROM python:3.12-slim
+FROM python:3.12-slim-bookworm
 
 # Allow passing in your host UID/GID (defaults 1000:1000)
 ARG UID=1000
@@ -19,8 +19,11 @@ RUN apt-get update \
 # Install Mesa/GL and GLib so OpenCV can load libGL.so.1 for ComfyUI-VideoHelperSuite
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-      libgl1-mesa-glx \
+      libgl1 \
+      libglx-mesa0 \
       libglib2.0-0 \
+      fonts-dejavu-core \
+      fontconfig \
  && rm -rf /var/lib/apt/lists/*
 
 # Copy and enable the startup script
