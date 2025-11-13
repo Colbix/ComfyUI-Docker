@@ -15,26 +15,26 @@ ARG GID=1000
 # Install OS deps and create the non-root user
 RUN apt-get update \
  && apt-get install -y --no-install-recommends git \
- && apt-get install -y wget \
  && groupadd --gid ${GID} appuser \
  && useradd --uid ${UID} --gid ${GID} --create-home --shell /bin/bash appuser \
  && rm -rf /var/lib/apt/lists/*
 
 # The GID is not assigned to a name so we assign the GID to new group name which is used for
 # /dev/kfd, /dev/dri/renderD128, and /dev/dri/renderD129
-# that affect access to the main compute interface and Direct Rendering Interface
+# that affect access to the Kernel Fusion Driver and Direct Rendering Interface
 # See https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#accessing-gpus-in-containers
 RUN groupadd -g 992 render
 
-# Set the working directory
-WORKDIR /root
-
-# Install Mesa/GL and GLib so OpenCV can load libGL.so.1 for ComfyUI-VideoHelperSuite
-# Note: Mesa/GL hasn't been update for Ubuntu 24.04 so an older version is used
+# Install libgl1, libglx-mesa0, and libglib2 so OpenCV can load libGL.so.1 for ComfyUI-VideoHelperSuite
+# Some comfyui packages need font packages to operate so they are added as well
+# but can be removed if not needed
 RUN apt-get update \
- && apt-get install -y --no-install-recommends libglib2.0-0 \
- && wget http://archive.ubuntu.com/ubuntu/pool/universe/m/mesa/libgl1-mesa-glx_23.0.4-0ubuntu1~22.04.1_amd64.deb \
- && apt-get install -y ./libgl1-mesa-glx_23.0.4-0ubuntu1~22.04.1_amd64.deb \
+ && apt-get install -y --no-install-recommends \
+      libgl1 \
+      libglx-mesa0 \
+      libglib2.0-0 \
+      fonts-dejavu-core \
+      fontconfig \
  && rm -rf /var/lib/apt/lists/*
 
 # Copy and enable the startup script
@@ -45,7 +45,7 @@ RUN chmod +x /entrypoint.sh
 USER $UID:$GID
 
 # Install Pytorch for the supported version of Rocm, update as needed for newer versions
-RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.4
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.4
 
 # make ~/.local/bin available on the PATH so scripts like tqdm, torchrun, etc. are found
 ENV PATH=/home/appuser/.local/bin:$PATH

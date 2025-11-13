@@ -25,21 +25,19 @@ services:
 
       # persist just your saved flows (overrides the workflows/ in default):
       - /home/username/comfyui/flows:/app/ComfyUI/user/default/workflows:rw
-    ipc: host
-    network_mode: host
 
-     # Add groups to allow non-Root user access the main compute interface and Direct Rendering Interface
-     # See https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#accessing-gpus-in-containers
+     # Add the container's non-root user to additional container groups which will be used to access
+     # the Kernel Fusion Driver and Direct Rendering Interface
     group_add:
       - video
       - render
+     # Add devices from the host system that should be accessible to the container
+     # See https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html#accessing-gpus-in-containers
     devices:
       - /dev/kfd
       - /dev/dri
     security_opt:
       - seccomp=unconfined
-    cap_add:
-      - SYS_PTRACE
 
     stdin_open: true
     tty: true
