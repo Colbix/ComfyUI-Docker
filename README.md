@@ -35,7 +35,7 @@ You can find more [complete setup instructions on my website](https://www.johnal
   #### AMD with ROCm Linux
   - Docker for Linux; [Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
   - Review [ROCm System Requirements](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html) to see supported GPU's, CPU's, and OS's
-  - Install [AMDGPU driver](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/quick-start.html#amdgpu-driver-in) on the host.
+  - Install [AMDGPU driver](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/quick-start.html#amdgpu-driver-installation) on the host.
   - Identify the current host kernel version. `uname -r`
   - Review [ROCm compatible user and kernel-space](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/user-kernel-space-compat-matrix.html) to make sure the host kernel version is supported.
 
