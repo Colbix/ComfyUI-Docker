@@ -30,12 +30,6 @@ RUN apt-get update \
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Switch to non-root user
-USER $UID:$GID
-
-# make ~/.local/bin available on the PATH so scripts like tqdm, torchrun, etc. are found
-ENV PATH=/home/appuser/.local/bin:$PATH
-
 # Set the working directory
 WORKDIR /app
 
@@ -50,6 +44,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # (Optional) Clean up pip cache to reduce image size
 RUN pip cache purge
+
+# Fix ownership once at the end
+RUN chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER $UID:$GID
+
+# make ~/.local/bin available on the PATH so scripts like tqdm, torchrun, etc. are found
+ENV PATH=/home/appuser/.local/bin:$PATH
 
 # Expose the port that ComfyUI will use (change if needed)
 EXPOSE 8188
