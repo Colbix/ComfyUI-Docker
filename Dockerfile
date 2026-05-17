@@ -51,9 +51,6 @@ WORKDIR /app/ComfyUI
 # Install ComfyUI dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# (Optional) Clean up pip cache to reduce image size
-RUN pip cache purge
-
 # Expose the port that ComfyUI will use (change if needed)
 EXPOSE 8188
 
