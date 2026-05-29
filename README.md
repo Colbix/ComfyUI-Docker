@@ -35,14 +35,15 @@ You can find more [complete setup instructions on my website](https://www.johnal
   #### AMD with ROCm Linux
   - Docker for Linux; [Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
   - Review [ROCm System Requirements](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html) to see supported GPU's, CPU's, and OS's
-  - Install [AMDGPU driver](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/quick-start.html#amdgpu-driver-installation) on the host.
-  - Identify the current host kernel version. `uname -r`
+  - Identify the current host kernel version. Type `uname -r` in the terminal/shell.
   - Review [ROCm compatible user and kernel-space](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/user-kernel-space-compat-matrix.html) to make sure the host kernel version is supported.
+  - Register [AMDGPU Repo](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/quick-start.html#register-repositories) on the host.
+  - Install [Kernel driver](https://rocm.docs.amd.com/projects/install-on-linux/en/latest/install/quick-start.html#register-repositories) on the host.
 
 ### **2. Clone this repository**
 
 ```sh
-git clone https://github.com/Kaouthia/ComfyUI-Docker.git
+git clone -b amd-branch https://github.com/Colbix/ComfyUI-Docker.git
 cd ComfyUI-Docker
 ```
 
